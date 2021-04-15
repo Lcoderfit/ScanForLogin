@@ -15,6 +15,7 @@ func InitRouter()  {
 	// 设置路由组
 	router := r.Group("/")
 	{
-		router.GET("/", controller.)
+		router.GET("/", controller.Index)
+		router.POST("/qr-code/:id", controller.QrCode)
 	}
 }

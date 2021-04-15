@@ -4,8 +4,10 @@ import (
 	"ScanForLogin/model"
 	"ScanForLogin/utils"
 	"bytes"
+	"github.com/gin-gonic/gin"
 	"github.com/shunde/avatar-go/avatar"
 	"image/png"
+	"net/http"
 	"strconv"
 )
 
@@ -18,8 +20,9 @@ func init() {
 
 	for i := 0; i < len(users); i++ {
 		buf := bytes.NewBuffer([]byte{})
+		// 将字符串转换成图片类型
 		m := avatar.NewAvatar(users[i].Name)
-		// 将头像字节流存入buf中
+		// 将头像图片编码成字节流存入buf
 		err := png.Encode(buf, m)
 		if err != nil {
 			utils.Logger.Error("头像编码失败")
@@ -31,4 +34,14 @@ func init() {
 			utils.Logger.Errorf("user cache设置失败, %s, %v\n", i, users[i])
 		}
 	}
+}
+
+// Index 首页
+func Index(c *gin.Context) {
+	c.HTML(http.StatusOK, "index.html", nil)
+}
+
+// QrCode 获取二维码
+func QrCode(c *gin.Context) {
+
 }
