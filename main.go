@@ -2,8 +2,8 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/shunde/avatar-go/avatar"
+	"github.com/shunde/rsc/qr"
 	"image/png"
 	"os"
 )
@@ -34,5 +34,13 @@ func init() {
 }
 
 func main() {
-	fmt.Println("begin")
+	//fmt.Println("begin")
+	//var u uuid.UUID
+	//u = uuid.NewV4()
+	//fmt.Println(len(u), u)
+	//fmt.Println()
+	content := "http://blessing.lcoderfit.com"
+	c, _ := qr.Encode(content, qr.H)
+	f, _ := os.OpenFile("a.png", os.O_CREATE|os.O_RDWR, 0755)
+	f.Write(c.PNG())
 }
