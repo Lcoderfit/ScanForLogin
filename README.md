@@ -66,3 +66,15 @@ redis-cli shutdown
 
 在conf文件中设置密码参考第五节
 ```
+
+9.go get下载时指定branch或tag
+```text
+-u表示更新包到最新版本，-v表示输出详细信息
+
+指定branch:
+go get -u -v <path-to-repo>@<branch_name>
+
+指定tag：
+go get -u -v <path-to-repo>/tag
+
+```

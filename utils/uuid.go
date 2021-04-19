@@ -28,4 +28,3 @@ func randStringN(n int) string {
 		cBytes[i] = alphaNum[rand.Intn(size)]
 	}
 	return string(cBytes)
-}
