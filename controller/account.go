@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"github.com/gin-gonic/gin"
 	"github.com/shunde/avatar-go/avatar"
+	"github.com/shunde/rsc/qr"
 	"image/png"
 	"net/http"
 	"strconv"
@@ -36,6 +37,23 @@ func init() {
 	}
 }
 
+// Login 登录
+func Login(c *gin.Context) {
+	var uid string
+	// 如果uuid已存在于缓存中，则重新创建，直到创建一个唯一的uuid为止
+	for {
+		// 生成8-4-4-4-12格式的uuid字符串
+		//uid = fmt.Sprint(uuid.NewV4())
+		// 生成16位uuid
+		uid = utils.NewUuid()
+		if ok, _ := model.RedisClient.HExists("user", uid).Result(); !ok {
+			break
+		}
+	}
+
+	c, err := qr.Encode()
+}
+
 // Index 首页
 func Index(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.html", nil)
@@ -43,5 +61,14 @@ func Index(c *gin.Context) {
 
 // QrCode 获取二维码
 func QrCode(c *gin.Context) {
-
+	uid := c.Param("uid")
+	val, err := model.RedisClient.HGet("user", uid).Result()
+	if err != nil {
+		utils.Logger.Error("uid不存在")
+		c.JSON(http.StatusNotFound, nil)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"data": val,
+	})
 }
