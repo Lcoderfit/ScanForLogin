@@ -9,8 +9,8 @@ type User struct {
 
 // 二维码信息
 type QrCode struct {
-	Name   string
-	Data   []byte
+	Name   string // 二维码名称
+	Data   []byte // 二维码转换而成的字节数组
 	Scan   chan bool
 	Auth   chan bool
 	IsScan bool

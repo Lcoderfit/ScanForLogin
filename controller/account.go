@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"ScanForLogin/config"
+	"ScanForLogin/constant"
 	"ScanForLogin/model"
 	"ScanForLogin/utils"
 	"bytes"
@@ -12,6 +14,8 @@ import (
 	"image/png"
 	"net/http"
 	"strconv"
+	"strings"
+	"time"
 )
 
 func init() {
@@ -44,16 +48,40 @@ func Login(c *gin.Context) {
 	var uid string
 	// 如果uuid已存在于缓存中，则重新创建，直到创建一个唯一的uuid为止
 	for {
-		// 生成8-4-4-4-12格式的uuid字符串
-		//uid = fmt.Sprint(uuid.NewV4())
-		// 生成16位uuid
-		uid = utils.NewUuid()
+		// 生成32位的uuid字符串
+		uid = strings.Replace(fmt.Sprint(uuid.NewV4()), "-", "", -1)
 		if ok, _ := model.RedisClient.HExists("user", uid).Result(); !ok {
 			break
 		}
 	}
-
-	c, err := qr.Encode()
+	// 将字符串进行编码
+	url, err := utils.UrlJoin("http://localhost:"+config.ServerCfg.HttpPort, "/code")
+	if err != nil {
+		utils.Logger.Error("url拼接失败")
+		fail(c, constant.UrlJoinError)
+		return
+	}
+	code, err := qr.Encode(url, qr.H)
+	if err != nil {
+		utils.Logger.Error("二维码生成失败")
+		fail(c, constant.QrCodeEncodeError)
+		return
+	}
+	qrCode := model.QrCode{
+		Name: uid + ".png",
+		Data: code.PNG(),
+		Scan: make(chan bool),
+	}
+	// 将二维码信息缓存5分钟
+	_, err = model.RedisClient.Set(uid, &qrCode, 5*time.Minute).Result()
+	if err != nil {
+		utils.Logger.Error("二维码信息缓存失败")
+		fail(c, constant.QrCodeCacheError)
+		return
+	}
+	successWithData(c, gin.H{
+		"uid": uid,
+	})
 }
 
 // Index 首页

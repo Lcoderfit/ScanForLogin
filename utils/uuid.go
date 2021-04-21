@@ -15,7 +15,7 @@ func NewUuid() string {
 // 生成N为的UUID
 func NewUuIDN(n int) string {
 	if n <= 0 {
-		return nil
+		return ""
 	}
 	return randStringN(n)
 }
@@ -28,3 +28,4 @@ func randStringN(n int) string {
 		cBytes[i] = alphaNum[rand.Intn(size)]
 	}
 	return string(cBytes)
+}
