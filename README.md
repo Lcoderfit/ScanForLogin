@@ -1,4 +1,5 @@
 # ScanForLogin
+## 一、redis的下载、安装和配置
 
 1.下载redis：
 ```text
@@ -78,3 +79,25 @@ go get -u -v <path-to-repo>@<branch_name>
 go get -u -v <path-to-repo>/tag
 
 ```
+
+## 二、Go的encoding/json
+1.结构体无法直接存入redis，如果结构体中的字段是小写的，则转换为json之后得到的结果只是一个"{}"大括号，不包含任何字段，因为结构体中的字段为小写则为不可导
+
+2.json tag用于设置结构体转换为json后字段的名称,如果没有json tag，则默认等于字段名
+```text
+	a := struct {
+		C string `json:"c"`
+		B int `json:"b"`
+	}{
+		C: "robert lu",
+		B: 124,
+	}
+	// aj为[]byte类型
+	aj, err := json.Marshal(&a)
+	fmt.Println(aj)
+```
+
+3.设置数据的时候一般后面要带上Result(),因为这样如果设置失败可以抛出error；
+如果从redis中获取值时，可以按需考虑，如果key不存在时需要抛出异常，则使用Result，如果key不存在也要正常运行，则使用String()等函数
+
+4.在使用json.Marshal时，参数何时使用&val,何时使用val，两种有区别吗？

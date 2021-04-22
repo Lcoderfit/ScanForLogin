@@ -6,6 +6,7 @@ import (
 	"ScanForLogin/model"
 	"ScanForLogin/utils"
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	uuid "github.com/satori/go.uuid"
@@ -43,7 +44,13 @@ func init() {
 	}
 }
 
+// Index 首页
+func Index(c *gin.Context) {
+	c.HTML(http.StatusOK, "index.html", nil)
+}
+
 // Login 登录
+// 会生成一个32位的uuid字符串，然后根据该uuid和base url生成二维码
 func Login(c *gin.Context) {
 	var uid string
 	// 如果uuid已存在于缓存中，则重新创建，直到创建一个唯一的uuid为止
@@ -55,7 +62,7 @@ func Login(c *gin.Context) {
 		}
 	}
 	// 将字符串进行编码
-	url, err := utils.UrlJoin("http://localhost:"+config.ServerCfg.HttpPort, "/code")
+	url, err := utils.UrlJoin("http://localhost:"+config.ServerCfg.HttpPort, "/scan-code")
 	if err != nil {
 		utils.Logger.Error("url拼接失败")
 		fail(c, constant.UrlJoinError)
@@ -72,8 +79,16 @@ func Login(c *gin.Context) {
 		Data: code.PNG(),
 		Scan: make(chan bool),
 	}
+	// 结构体无法直接存入redis，需先转为json格式
+	val, err := json.Marshal(&qrCode)
+	if err != nil {
+		utils.Logger.Error("二维码信息转换为json格式失败")
+		fail(c, constant.QrCodeConvertJsonError)
+		return
+	}
+
 	// 将二维码信息缓存5分钟
-	_, err = model.RedisClient.Set(uid, &qrCode, 5*time.Minute).Result()
+	_, err = model.RedisClient.Set(uid, &val, 5*time.Minute).Result()
 	if err != nil {
 		utils.Logger.Error("二维码信息缓存失败")
 		fail(c, constant.QrCodeCacheError)
@@ -84,21 +99,14 @@ func Login(c *gin.Context) {
 	})
 }
 
-// Index 首页
-func Index(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.html", nil)
-}
-
 // QrCode 获取二维码
 func QrCode(c *gin.Context) {
 	uid := c.Param("uid")
-	val, err := model.RedisClient.HGet("user", uid).Result()
+	val, err := model.RedisClient.Get(uid).Result()
 	if err != nil {
 		utils.Logger.Error("uid不存在")
-		c.JSON(http.StatusNotFound, nil)
+		fail(c, constant.UidNotExistError)
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"data": val,
-	})
+	successWithData(c, val)
 }

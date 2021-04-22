@@ -8,8 +8,10 @@ const (
 	Success = 10000
 
 	// 帐号模块
-	QrCodeEncodeError = 20101
-	QrCodeCacheError  = 20102
+	QrCodeEncodeError      = 20101
+	QrCodeCacheError       = 20102
+	UidNotExistError       = 20103
+	QrCodeConvertJsonError = 20104
 
 	// 实用工具模块
 	UrlJoinError = 20201
@@ -19,7 +21,9 @@ var CodeMsg = map[int]string{
 	// 服务级别状态码
 	Success: "ok",
 	// 帐号模块
-	UrlJoinError:      "URL拼接错误",
-	QrCodeEncodeError: "二维码生成失败",
-	QrCodeCacheError:  "二维码缓存失败",
+	UrlJoinError:           "URL拼接错误",
+	QrCodeEncodeError:      "二维码生成失败",
+	QrCodeCacheError:       "二维码缓存失败",
+	UidNotExistError:       "uid不存在",
+	QrCodeConvertJsonError: "二维码信息转换为json格式失败",
 }

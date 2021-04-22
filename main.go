@@ -1,9 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/go-redis/redis"
 	"net/url"
 	"path"
+	"time"
 )
 
 //func init() {
@@ -43,12 +46,46 @@ func main() {
 	//f, _ := os.OpenFile("a.png", os.O_CREATE|os.O_RDWR, 0755)
 	//f.Write(c.PNG())
 
-	s, err := UrlJoin("http://localhost:" + "8060", "/b", "/c/", "/d")
+	//s, err := UrlJoin("http://localhost:" + "8060", "/b", "/c/", "/d")
+	//if err != nil {
+	//	fmt.Println(err)
+	//	return
+	//}
+	//fmt.Println(s)
+
+	client := redis.NewClient(&redis.Options{
+		DB:       0,
+		Password: "124541",
+		Addr:     "47.101.48.37:6379",
+	})
+
+	a := struct {
+		C string `json:"c"`
+		B int `json:"b"`
+	}{
+		C: "robert lu",
+		B: 124,
+	}
+	aj, err := json.Marshal(&a)
 	if err != nil {
 		fmt.Println(err)
 		return
+	} else {
+		fmt.Println("json marshal success")
 	}
-	fmt.Println(s)
+	_, err = client.Set("t", aj, 5*time.Minute).Result()
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("set ok")
+	}
+	res, err := client.Get("gg").Result()
+	if err != nil {
+		fmt.Println("err:", err)
+		return
+	} else {
+		fmt.Println("res: ", res)
+	}
 }
 
 // UrlJoin 对URL进行拼接
