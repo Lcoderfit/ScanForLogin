@@ -19,6 +19,7 @@ func InitRouter() {
 		router.GET("/login", controller.Login)
 		router.GET("/", controller.Index)
 		router.POST("/qr-code/:uid", controller.QrCode)
+		router.GET("/pc")
 	}
 
 	err := r.Run(config.ServerCfg.HttpPort)

@@ -3,7 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
+	"html/template"
 	"net/url"
 	"path"
 	"time"
@@ -34,12 +36,56 @@ import (
 //	f.Write(buf.Bytes())
 //}
 
+//func index(w http.ResponseWriter, r *http.Request) {
+//	// 定义模板
+//	// 解析模板
+//	// 父模板和子模板的顺序不能乱，父在前，子在后
+//	t, err := template.ParseFiles("./static/base.html","./static/helllo.html")
+//	if err != nil{
+//		fmt.Printf("parse files failed, err : %v\n", err)
+//		return
+//	}
+//	// 渲染模板
+//	// 渲染模板时使用ExecuteTemplate函数，需要制定要被渲染的模板名称
+//	err = t.ExecuteTemplate(w, "helllo.html","index")
+//	if err != nil {
+//		fmt.Println(err)
+//		return
+//	}
+//}
+
+func index(c *gin.Context) {
+	// 定义模板
+	// 解析模板
+	// 父模板和子模板的顺序不能乱，父在前，子在后
+	t, err := template.ParseFiles("./static/base.html", "./static/helllo.html")
+	if err != nil {
+		fmt.Printf("parse files failed, err : %v\n", err)
+		return
+	}
+	// 渲染模板
+	// 渲染模板时使用ExecuteTemplate函数，需要制定要被渲染的模板名称
+	err = t.ExecuteTemplate(c.Writer, "helllo.html", "index")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+}
+
 func main() {
 	//fmt.Println("begin")
 	//var u uuid.UUID
 	//u = uuid.NewV4()
 	//fmt.Println(len(u), u)
 	//fmt.Println()
+
+	//content := "http://blessing.lcoderfit.com"
+	//c, _ := qr.Encode(content, qr.H)
+	//f, _ := os.OpenFile("a.png", os.O_CREATE|os.O_RDWR, 0755)
+	//f.Write(c.PNG())
+	r := gin.New()
+	r.GET("/index", index)
+	r.Run(":8063")
 
 	//content := "http://blessing.lcoderfit.com"
 	//c, _ := qr.Encode(content, qr.H)
@@ -61,7 +107,7 @@ func main() {
 
 	a := struct {
 		C string `json:"c"`
-		B int `json:"b"`
+		B int    `json:"b"`
 	}{
 		C: "robert lu",
 		B: 124,
