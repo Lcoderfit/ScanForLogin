@@ -12,6 +12,8 @@ const (
 	QrCodeCacheError       = 20102
 	UidNotExistError       = 20103
 	QrCodeConvertJsonError = 20104
+	TemplateParseError     = 20105
+	TemplateExecuteError   = 20106
 
 	// 实用工具模块
 	UrlJoinError = 20201
@@ -26,4 +28,6 @@ var CodeMsg = map[int]string{
 	QrCodeCacheError:       "二维码缓存失败",
 	UidNotExistError:       "uid不存在",
 	QrCodeConvertJsonError: "二维码信息转换为json格式失败",
+	TemplateParseError:     "模板解析失败",
+	TemplateExecuteError:   "模板执行失败",
 }

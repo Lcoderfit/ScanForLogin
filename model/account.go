@@ -11,9 +11,9 @@ type User struct {
 type QrCode struct {
 	Name   string    `json:"name"` // 二维码名称
 	Data   []byte    `json:"data"` // 二维码转换而成的字节数组
-	Scan   chan bool `json:"scan"`
-	Auth   chan bool `json:"auth"`
-	IsScan bool      `json:"is_scan"`
-	ScanBy string    `json:"scan_by"`
+	//Scan   chan bool `json:"scan"`
+	//Auth   chan bool `json:"auth"`
+	//IsScan bool      `json:"is_scan"`
+	//ScanBy string    `json:"scan_by"`
 	Token  string    `json:"token"`
 }

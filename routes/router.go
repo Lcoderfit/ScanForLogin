@@ -16,10 +16,11 @@ func InitRouter() {
 	// 设置路由组
 	router := r.Group("/")
 	{
-		router.GET("/login", controller.Login)
+		//router.GET("/login", controller.Login)
 		router.GET("/", controller.Index)
-		router.POST("/qr-code/:uid", controller.QrCode)
-		router.GET("/pc")
+		router.GET("/pc-login", controller.PcLogin)
+		router.GET("/qr-code/:uid", controller.QrCode)
+		router.GET("/cellphone-confirm/:uid", controller.ConfirmScanStatus)
 	}
 
 	err := r.Run(config.ServerCfg.HttpPort)
