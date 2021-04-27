@@ -28,25 +28,25 @@ type redisConfig struct {
 func init() {
 	pwd, err := os.Getwd()
 	if err != nil {
-		utils.Logger.Panic("获取config路径失败")
+		utils.Logger.Panic("获取config路径失败, ", err)
 	}
-	cfgPath := path.Join(pwd, "config.ini")
+	cfgPath := path.Join(pwd, "config/config.ini")
 
 	// 加载配置文件
 	cfg, err := ini.Load(cfgPath)
 	if err != nil {
-		utils.Logger.Panic("读取config.ini失败")
+		utils.Logger.Panic("读取config.ini失败, ", err)
 		return
 	}
 	// 读取服务器配置
 	err = cfg.Section("server").MapTo(ServerCfg)
 	if err != nil {
-		utils.Logger.Panic("读取服务器配置失败")
+		utils.Logger.Panic("读取服务器配置失败, ", err)
 	}
 	// 读取redis配置
 	err = cfg.Section("redis").MapTo(RedisCfg)
 	if err != nil {
-		utils.Logger.Panic("读取redis配置失败")
+		utils.Logger.Panic("读取redis配置失败, ", err)
 	}
 
 }

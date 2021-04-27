@@ -6,10 +6,10 @@ import (
 	"ScanForLogin/model"
 	"ScanForLogin/utils"
 	"bytes"
+	"encoding/base64"
 	"github.com/gin-gonic/gin"
 	"github.com/shunde/avatar-go/avatar"
 	"github.com/shunde/rsc/qr"
-	"html/template"
 	"image/png"
 	"net/http"
 	"strconv"
@@ -44,6 +44,11 @@ func init() {
 func Index(c *gin.Context) {
 	//c.HTML(http.StatusOK, "index.html", nil)
 	c.Redirect(http.StatusFound, "/pc-login")
+}
+
+// Hello 测试页面
+func Hello(c *gin.Context) {
+	c.HTML(http.StatusOK, "hello.html", nil)
 }
 
 // PcLogin pc端登录
@@ -87,18 +92,9 @@ func QrCode(c *gin.Context) {
 			fail(c, constant.QrCodeEncodeError)
 			return
 		}
-		t, err := template.ParseFiles("../static/base.html", "../static/pc.html")
-		if err != nil {
-			utils.Logger.Error("模板解析失败")
-			fail(c, constant.TemplateParseError)
-			return
-		}
-		err = t.ExecuteTemplate(c.Writer, "content", code.PNG())
-		if err != nil {
-			utils.Logger.Error("模板执行失败")
-			fail(c, constant.TemplateExecuteError)
-			return
-		}
+		c.HTML(http.StatusOK, "pc.html", gin.H{
+			"base64Qrcode": base64.NewEncoding(string(code.PNG())),
+		})
 	}
 }
 
@@ -113,22 +109,11 @@ func ConfirmScanStatus(c *gin.Context) {
 	}
 	var content string
 	if c.Request.Method == "GET" {
-		
+
 	} else if c.Request.Method == "POST" {
 		content = "PC端登录成功"
 	}
-	t, err := template.ParseFiles("../static/base.html", "../static/cellphone.html")
-	if err != nil {
-		utils.Logger.Error("模板解析失败")
-		fail(c, constant.TemplateParseError)
-		return
-	}
-	err = t.ExecuteTemplate(c.Writer, "content", content)
-	if err != nil {
-		utils.Logger.Error("模板执行失败")
-		fail(c, constant.TemplateExecuteError)
-		return
-	}
+	c.HTML(http.StatusOK, "cellphone.html", content)
 }
 
 //

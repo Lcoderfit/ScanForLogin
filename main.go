@@ -1,14 +1,12 @@
 package main
 
 import (
-	"encoding/json"
+	"ScanForLogin/routes"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/go-redis/redis"
 	"html/template"
 	"net/url"
 	"path"
-	"time"
 )
 
 //func init() {
@@ -83,9 +81,10 @@ func main() {
 	//c, _ := qr.Encode(content, qr.H)
 	//f, _ := os.OpenFile("a.png", os.O_CREATE|os.O_RDWR, 0755)
 	//f.Write(c.PNG())
-	r := gin.New()
-	r.GET("/index", index)
-	r.Run(":8063")
+
+	//r := gin.New()
+	//r.GET("/index", index)
+	//r.Run(":8063")
 
 	//content := "http://blessing.lcoderfit.com"
 	//c, _ := qr.Encode(content, qr.H)
@@ -99,39 +98,40 @@ func main() {
 	//}
 	//fmt.Println(s)
 
-	client := redis.NewClient(&redis.Options{
-		DB:       0,
-		Password: "124541",
-		Addr:     "47.101.48.37:6379",
-	})
-
-	a := struct {
-		C string `json:"c"`
-		B int    `json:"b"`
-	}{
-		C: "robert lu",
-		B: 124,
-	}
-	aj, err := json.Marshal(&a)
-	if err != nil {
-		fmt.Println(err)
-		return
-	} else {
-		fmt.Println("json marshal success")
-	}
-	_, err = client.Set("t", aj, 5*time.Minute).Result()
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println("set ok")
-	}
-	res, err := client.Get("gg").Result()
-	if err != nil {
-		fmt.Println("err:", err)
-		return
-	} else {
-		fmt.Println("res: ", res)
-	}
+	//client := redis.NewClient(&redis.Options{
+	//	DB:       0,
+	//	Password: "124541",
+	//	Addr:     "47.101.48.37:6379",
+	//})
+	//
+	//a := struct {
+	//	C string `json:"c"`
+	//	B int    `json:"b"`
+	//}{
+	//	C: "robert lu",
+	//	B: 124,
+	//}
+	//aj, err := json.Marshal(&a)
+	//if err != nil {
+	//	fmt.Println(err)
+	//	return
+	//} else {
+	//	fmt.Println("json marshal success")
+	//}
+	//_, err = client.Set("t", aj, 5*time.Minute).Result()
+	//if err != nil {
+	//	fmt.Println(err)
+	//} else {
+	//	fmt.Println("set ok")
+	//}
+	//res, err := client.Get("gg").Result()
+	//if err != nil {
+	//	fmt.Println("err:", err)
+	//	return
+	//} else {
+	//	fmt.Println("res: ", res)
+	//}
+	routes.InitRouter()
 }
 
 // UrlJoin 对URL进行拼接
