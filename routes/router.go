@@ -23,9 +23,14 @@ func InitRouter() {
 		//router.GET("/login", controller.Login)
 		router.GET("/", controller.Index)
 		router.GET("/hello", controller.Hello)
+
 		router.GET("/pc-login", controller.PcLogin)
+		router.POST("/pc-login", controller.PcLogin)
+
 		router.GET("/qr-code/:uid", controller.QrCode)
+
 		router.GET("/cellphone-confirm/:uid", controller.ConfirmScanStatus)
+		router.POST("/cellphone-confirm/:uid", controller.ConfirmScanStatus)
 	}
 
 	err := r.Run(config.ServerCfg.HttpPort)

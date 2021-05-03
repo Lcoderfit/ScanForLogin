@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"html/template"
+	"io/ioutil"
+	"net/http"
 	"net/url"
 	"path"
 )
@@ -131,7 +133,22 @@ func main() {
 	//} else {
 	//	fmt.Println("res: ", res)
 	//}
+
 	routes.InitRouter()
+	//fmt.Println(getExternal())
+}
+
+func getExternal() string {
+	resp, err := http.Get("http://myexternalip.com/raw")
+	if err != nil {
+		return ""
+	}
+	defer resp.Body.Close()
+	content, _ := ioutil.ReadAll(resp.Body)
+	//buf := new(bytes.Buffer)
+	//buf.ReadFrom(resp.Body)
+	//s := buf.String()
+	return string(content)
 }
 
 // UrlJoin 对URL进行拼接

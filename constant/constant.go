@@ -14,9 +14,11 @@ const (
 	QrCodeConvertJsonError = 20104
 	TemplateParseError     = 20105
 	TemplateExecuteError   = 20106
+	CacheNotSetError       = 20107
 
 	// 实用工具模块
-	UrlJoinError = 20201
+	UrlJoinError          = 20201
+	LocalIpNotObtainError = 20202
 )
 
 var CodeMsg = map[int]string{
@@ -30,4 +32,6 @@ var CodeMsg = map[int]string{
 	QrCodeConvertJsonError: "二维码信息转换为json格式失败",
 	TemplateParseError:     "模板解析失败",
 	TemplateExecuteError:   "模板执行失败",
+	LocalIpNotObtainError:  "本地IP获取失败",
+	CacheNotSetError:       "缓存设置失败",
 }
